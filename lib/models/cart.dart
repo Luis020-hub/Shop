@@ -1,6 +1,5 @@
 import 'dart:math';
-
-import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:shop/models/cart_item.dart';
 import 'package:shop/models/product.dart';
 
@@ -12,7 +11,7 @@ class Cart with ChangeNotifier {
   }
 
   int get itemsCount {
-    return _items.length;
+    return items.length;
   }
 
   double get totalAmount {
@@ -36,7 +35,7 @@ class Cart with ChangeNotifier {
         ),
       );
     } else {
-      items.putIfAbsent(
+      _items.putIfAbsent(
         product.id,
         () => CartItem(
           id: Random().nextDouble().toString(),

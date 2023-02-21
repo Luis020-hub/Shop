@@ -34,9 +34,9 @@ class MyApp extends StatelessWidget {
           ),
           fontFamily: 'Lato',
         ),
-        home: const ProductsOverviewPage(),
+        home: ProductsOverviewPage(),
         routes: {
-          AppRoutes.productDetail: (ctx) => const ProductDetailPage(),
+          AppRoutes.productDetail: (ctx) => ProductDetailPage(),
         },
         debugShowCheckedModeBanner: false,
       ),
