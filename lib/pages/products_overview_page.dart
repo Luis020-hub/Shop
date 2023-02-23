@@ -26,9 +26,20 @@ class _ProductsOverviewPageState extends State<ProductsOverviewPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        centerTitle: true,
         title: const Text('My Shop'),
         actions: [
+          Consumer<Cart>(
+            child: IconButton(
+              onPressed: () {
+                Navigator.of(context).pushNamed(AppRoutes.cart);
+              },
+              icon: const Icon(Icons.shopping_cart),
+            ),
+            builder: (ctx, cart, child) => Badge(
+              value: cart.itemsCount.toString(),
+              child: child!,
+            ),
+          ),
           PopupMenuButton(
             icon: const Icon(Icons.more_vert),
             itemBuilder: (_) => [
@@ -51,18 +62,6 @@ class _ProductsOverviewPageState extends State<ProductsOverviewPage> {
               });
             },
           ),
-          Consumer<Cart>(
-            child: IconButton(
-              onPressed: () {
-                Navigator.of(context).pushNamed(AppRoutes.cart);
-              },
-              icon: const Icon(Icons.shopping_cart),
-            ),
-            builder: (ctx, cart, child) => Badge(
-              value: cart.itemsCount.toString(),
-              child: child!,
-            ),
-          )
         ],
       ),
       body: ProductGrid(_showFavoriteOnly),
