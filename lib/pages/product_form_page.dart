@@ -48,6 +48,7 @@ class _ProductFormPageState extends State<ProductFormPage> {
               TextFormField(
                 decoration: const InputDecoration(labelText: 'Name'),
                 textInputAction: TextInputAction.next,
+                focusNode: _priceFocus,
                 onFieldSubmitted: (_) {
                   FocusScope.of(context).requestFocus(_priceFocus);
                 },
@@ -66,6 +67,7 @@ class _ProductFormPageState extends State<ProductFormPage> {
               TextFormField(
                 decoration: const InputDecoration(labelText: 'Description'),
                 focusNode: _descriptionFocus,
+                textInputAction: TextInputAction.next,
                 keyboardType: TextInputType.multiline,
                 maxLines: 3,
               ),
