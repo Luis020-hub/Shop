@@ -19,7 +19,7 @@ class _ProductFormPageState extends State<ProductFormPage> {
   final _imageUrlFocus = FocusNode();
   final _imageUrlController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
-  final _formData = Map<String, Object>();
+  final _formData = <String, Object>{};
 
   @override
   void initState() {
@@ -208,14 +208,7 @@ class _ProductFormPageState extends State<ProductFormPage> {
                     alignment: Alignment.center,
                     child: _imageUrlController.text.isEmpty
                         ? const Text('Enter the URL')
-                        : SizedBox(
-                          width: 100,
-                          height: 100,
-                          child: FittedBox(
-                              fit: BoxFit.cover,
-                              child: Image.network(_imageUrlController.text),
-                            ),
-                        ),
+                        : Image.network(_imageUrlController.text),
                   ),
                 ],
               ),

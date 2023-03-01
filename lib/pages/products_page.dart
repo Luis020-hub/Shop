@@ -18,7 +18,7 @@ class ProductsPage extends StatelessWidget {
         title: const Text('Manage Products'),
         actions: [
           IconButton(
-            icon: Icon(Icons.add),
+            icon: const Icon(Icons.add),
             onPressed: () {
               Navigator.of(context).pushNamed(
                 AppRoutes.product_form,
@@ -35,7 +35,7 @@ class ProductsPage extends StatelessWidget {
           itemBuilder: (ctx, i) => Column(
             children: [
               ProductItem(products.items[i]),
-              Divider(),
+              const Divider(),
             ],
           ),
         ),
