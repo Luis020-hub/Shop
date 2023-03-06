@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'dart:io';
 import 'dart:math';
 
 import 'package:flutter/material.dart';
@@ -23,7 +22,7 @@ class ProductList with ChangeNotifier {
   Future<void> loadProducts() async {
     _items.clear();
     final response =
-        await http.get(Uri.parse('${Constants.product_base_url}.json'));
+        await http.get(Uri.parse('${Constants.productBaseUrl}.json'));
     if (response.body == 'null') return;
     Map<String, dynamic> data = jsonDecode(response.body);
     data.forEach((productId, productData) {
@@ -61,7 +60,7 @@ class ProductList with ChangeNotifier {
 
   Future<void> addProduct(Product product) async {
     final response = await http.post(
-      Uri.parse('${Constants.product_base_url}.json'),
+      Uri.parse('${Constants.productBaseUrl}.json'),
       body: jsonEncode(
         {
           "name": product.name,
@@ -90,7 +89,7 @@ class ProductList with ChangeNotifier {
 
     if (index >= 0) {
       await http.patch(
-        Uri.parse('${Constants.product_base_url}/${product.id}.json'),
+        Uri.parse('${Constants.productBaseUrl}/${product.id}.json'),
         body: jsonEncode(
           {
             "name": product.name,
@@ -114,7 +113,7 @@ class ProductList with ChangeNotifier {
       notifyListeners();
 
       final response = await http.delete(
-        Uri.parse('${Constants.product_base_url}/${product.id}.json'),
+        Uri.parse('${Constants.productBaseUrl}/${product.id}.json'),
       );
 
       if (response.statusCode >= 400) {

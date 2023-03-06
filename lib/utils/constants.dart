@@ -1,6 +1,6 @@
 class Constants {
-  static const product_base_url =
+  static const productBaseUrl =
       'https://shop-flutter-41b4d-default-rtdb.firebaseio.com/products';
-    static const order_base_url =
+    static const orderBaseUrl =
       'https://shop-flutter-41b4d-default-rtdb.firebaseio.com/orders';
 }
