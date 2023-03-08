@@ -13,6 +13,8 @@ class AuthForm extends StatefulWidget {
 
 class _AuthFormState extends State<AuthForm> {
   final _passwordController = TextEditingController();
+  final _formKey = GlobalKey<FormState>();
+  bool _isLoading = false;
   AuthMode _authMode = AuthMode.login;
   final Map<String, String> _authData = {
     'email': '',
@@ -32,7 +34,25 @@ class _AuthFormState extends State<AuthForm> {
     });
   }
 
-  void _submit() {}
+  void _submit() {
+    final isValid = _formKey.currentState?.validate() ?? false;
+
+    if (!isValid) {
+      return;
+    }
+
+    setState(() => _isLoading = true);
+
+    _formKey.currentState?.save();
+
+    if (_isLogin()) {
+      // Login
+    } else {
+      // Registro
+    }
+
+    setState(() => _isLoading = false);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -47,6 +67,7 @@ class _AuthFormState extends State<AuthForm> {
         height: _isLogin() ? 360 : 360,
         width: deviceSize.width * 0.75,
         child: Form(
+          key: _formKey,
           child: Column(
             children: [
               TextFormField(
@@ -92,21 +113,24 @@ class _AuthFormState extends State<AuthForm> {
                         },
                 ),
               const SizedBox(height: 20),
-              ElevatedButton(
-                onPressed: _submit,
-                style: ElevatedButton.styleFrom(
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(30),
+              if (_isLoading)
+                const CircularProgressIndicator()
+              else
+                ElevatedButton(
+                  onPressed: _submit,
+                  style: ElevatedButton.styleFrom(
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(30),
+                    ),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 30,
+                      vertical: 8,
+                    ),
                   ),
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 30,
-                    vertical: 8,
+                  child: Text(
+                    _authMode == AuthMode.login ? 'Log in' : 'Sign up',
                   ),
                 ),
-                child: Text(
-                  _authMode == AuthMode.login ? 'Log in' : 'Sign up',
-                ),
-              ),
               const Spacer(),
               TextButton(
                 onPressed: _switchAuthMode,
