@@ -4,11 +4,14 @@ import 'package:http/http.dart' as http;
 
 class Auth with ChangeNotifier {
   static const _url =
-      'https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=AIzaSyDJ19uCpdvaPxiCdlereXEsVhBJkU5JiRo';
+      'https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=';
 
-  Future<void> signup(String email, String password) async {
+  Future<void> _autheticate(
+      String email, String password, String urlFragment) async {
+    final url =
+        'https://identitytoolkit.googleapis.com/v1/accounts:$urlFragment?key=AIzaSyDJ19uCpdvaPxiCdlereXEsVhBJkU5JiRo';
     final response = await http.post(
-      Uri.parse(_url),
+      Uri.parse(url),
       body: jsonEncode({
         'email': email,
         'password': password,
@@ -17,5 +20,13 @@ class Auth with ChangeNotifier {
     );
 
     print(jsonDecode(response.body));
+  }
+
+  Future<void> signup(String email, String password) async {
+    _autheticate(email, password, 'signUp');
+  }
+
+  Future<void> login(String email, String password) async {
+    _autheticate(email, password, 'signInWithPassword');
   }
 }
