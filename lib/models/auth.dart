@@ -3,6 +3,7 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:shop/data/store.dart';
 import 'package:shop/exceptions/auth_exception.dart';
 
 class Auth with ChangeNotifier {
@@ -29,7 +30,7 @@ class Auth with ChangeNotifier {
     return isAuth ? _userId : null;
   }
 
-  Future<void> _autheticate(
+  Future<void> _authenticate(
       String email, String password, String urlFragment) async {
     final url =
         'https://identitytoolkit.googleapis.com/v1/accounts:$urlFragment?key=AIzaSyDJ19uCpdvaPxiCdlereXEsVhBJkU5JiRo';
@@ -56,17 +57,44 @@ class Auth with ChangeNotifier {
           seconds: int.parse(body['expiresIn']),
         ),
       );
+
+      Store.saveMap('userData', {
+        'token': _token,
+        'email': _email,
+        'userId': _userId,
+        'expiryDate': _expiryDate!.toIso8601String(),
+      });
+
       _autoLogout();
       notifyListeners();
     }
   }
 
   Future<void> signup(String email, String password) async {
-    return _autheticate(email, password, 'signUp');
+    return _authenticate(email, password, 'signUp');
   }
 
   Future<void> login(String email, String password) async {
-    return _autheticate(email, password, 'signInWithPassword');
+    return _authenticate(email, password, 'signInWithPassword');
+  }
+
+  Future<void> tryAutoLogin() async {
+    if (isAuth) return;
+
+    final userData = await Store.getMap('userData');
+
+    if (userData.isEmpty) return;
+
+    final expiryDate = DateTime.parse(userData['expiryDate']);
+    if (expiryDate.isBefore(DateTime.now())) return;
+
+    _token = userData['token'];
+    _email = userData['email'];
+    _userId = userData['userId'];
+    _expiryDate = expiryDate;
+
+    _autoLogout();
+    notifyListeners();
   }
 
   void logout() {
@@ -86,6 +114,9 @@ class Auth with ChangeNotifier {
   void _autoLogout() {
     _clearLogoutTimer();
     final timeToLogout = _expiryDate?.difference(DateTime.now()).inSeconds;
-    _logoutTimer = Timer(Duration(seconds: timeToLogout ?? 0), logout);
+    _logoutTimer = Timer(
+      Duration(seconds: timeToLogout ?? 0),
+      logout,
+    );
   }
 }
