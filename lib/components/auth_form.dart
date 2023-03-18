@@ -51,7 +51,7 @@ class _AuthFormState extends State<AuthForm>
       ),
     );
 
-    _heightAnimation?.addListener(() => setState(() {}));
+    // _heightAnimation?.addListener(() => setState(() {}));
   }
 
   @override
@@ -131,87 +131,91 @@ class _AuthFormState extends State<AuthForm>
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(10),
       ),
-      child: Container(
-        padding: const EdgeInsets.all(16),
-        height: _heightAnimation?.value.height ?? (_isLogin() ? 310 : 400),
-        width: deviceSize.width * 0.75,
+      child: AnimatedBuilder(
+        animation: _heightAnimation!,
+        builder: (context, childForm) => Container(
+          padding: const EdgeInsets.all(16),
+          height: _heightAnimation?.value.height ?? (_isLogin() ? 310 : 400),
+          width: deviceSize.width * 0.75,
+          child: childForm,
+        ),
         child: Form(
-          key: _formKey,
-          child: Column(
-            children: [
-              TextFormField(
-                decoration: const InputDecoration(labelText: 'E-mail'),
-                keyboardType: TextInputType.emailAddress,
-                onSaved: (email) => _authData['email'] = email ?? '',
-                validator: (_email) {
-                  final email = _email ?? '';
-                  if (email.trim().isEmpty || !email.contains('@')) {
-                    return 'Provide a valid email.';
-                  }
-                  return null;
-                },
-              ),
-              TextFormField(
-                decoration: const InputDecoration(labelText: 'Password'),
-                keyboardType: TextInputType.emailAddress,
-                obscureText: true,
-                controller: _passwordController,
-                onSaved: (password) => _authData['password'] = password ?? '',
-                validator: (_password) {
-                  final password = _password ?? '';
-                  if (password.isEmpty || password.length < 5) {
-                    return 'Provide a valid password';
-                  }
-                  return null;
-                },
-              ),
-              if (_isSignup())
+            key: _formKey,
+            child: Column(
+              children: [
                 TextFormField(
-                  decoration:
-                      const InputDecoration(labelText: 'Confirm your password'),
+                  decoration: const InputDecoration(labelText: 'E-mail'),
+                  keyboardType: TextInputType.emailAddress,
+                  onSaved: (email) => _authData['email'] = email ?? '',
+                  validator: (_email) {
+                    final email = _email ?? '';
+                    if (email.trim().isEmpty || !email.contains('@')) {
+                      return 'Provide a valid email.';
+                    }
+                    return null;
+                  },
+                ),
+                TextFormField(
+                  decoration: const InputDecoration(labelText: 'Password'),
                   keyboardType: TextInputType.emailAddress,
                   obscureText: true,
-                  validator: _isLogin()
-                      ? null
-                      : (_password) {
-                          final password = _password ?? '';
-                          if (password != _passwordController.text) {
-                            return 'Passwords do not match.';
-                          }
-                          return null;
-                        },
+                  controller: _passwordController,
+                  onSaved: (password) => _authData['password'] = password ?? '',
+                  validator: (_password) {
+                    final password = _password ?? '';
+                    if (password.isEmpty || password.length < 5) {
+                      return 'Provide a valid password';
+                    }
+                    return null;
+                  },
                 ),
-              const SizedBox(height: 20),
-              if (_isLoading)
-                const CircularProgressIndicator()
-              else
-                ElevatedButton(
-                  onPressed: _submit,
-                  style: ElevatedButton.styleFrom(
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(30),
+                if (_isSignup())
+                  TextFormField(
+                    decoration: const InputDecoration(
+                        labelText: 'Confirm your password'),
+                    keyboardType: TextInputType.emailAddress,
+                    obscureText: true,
+                    validator: _isLogin()
+                        ? null
+                        : (_password) {
+                            final password = _password ?? '';
+                            if (password != _passwordController.text) {
+                              return 'Passwords do not match.';
+                            }
+                            return null;
+                          },
+                  ),
+                const SizedBox(height: 20),
+                if (_isLoading)
+                  const CircularProgressIndicator()
+                else
+                  ElevatedButton(
+                    onPressed: _submit,
+                    style: ElevatedButton.styleFrom(
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(30),
+                      ),
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 30,
+                        vertical: 8,
+                      ),
                     ),
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 30,
-                      vertical: 8,
+                    child: Text(
+                      _authMode == AuthMode.login ? 'Log in' : 'Sign up',
                     ),
                   ),
+                const Spacer(),
+                TextButton(
+                  onPressed: _switchAuthMode,
                   child: Text(
-                    _authMode == AuthMode.login ? 'Log in' : 'Sign up',
+                    _isLogin()
+                        ? 'Do you want to register?'
+                        : 'Already have an account?',
                   ),
-                ),
-              const Spacer(),
-              TextButton(
-                onPressed: _switchAuthMode,
-                child: Text(
-                  _isLogin()
-                      ? 'Do you want to register?'
-                      : 'Already have an account?',
-                ),
-              )
-            ],
+                )
+              ],
+            ),
           ),
-        ),
       ),
     );
   }
